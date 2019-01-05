@@ -1,0 +1,59 @@
+import numpy as np
+
+lambda_1=8
+lambda_2=-16
+lambda_3=-1
+tau = 0.1
+A=np.array([[lambda_1,0,0],
+            [0,lambda_2,0], 
+            [0,0,lambda_3]])
+B=np.array([[0,0,-1], 
+            [0,0,-1], 
+            [1,tau,0]])
+c=np.array([1,-1,0])
+
+def F(z,t):
+    return A.dot(z) + c.dot(z)*B.dot(z)
+
+
+h=0
+z=np.array([1,1,1])
+def nextRandLorenz1():
+    global z
+    global h
+    z=z+ 0.00001*F(z,h)
+    v=(z[0]+z[1]+z[2])*10**(14)
+    k=int(v)%4096
+    h+=0.01
+    return k/4096
+    
+h=0
+z=np.array([1.1,1.1,1.1])
+def nextRandLorenz2():
+    global z
+    global h
+    z=z+ 0.00001*F(z,h)
+    v=(z[0]+z[1]+z[2])*10**(14)
+    k=int(v)%4096
+    h+=0.01
+    return k/4096
+
+
+
+import random
+N=100000
+x,y=0,0
+w,t=0,0
+
+n=0
+m=0
+for i in range(N):
+    x=random.random()
+    y=random.random()
+    w=nextRandLorenz2()
+    t=nextRandLorenz1()
+    if x**2+y**2<1:
+        n+=1
+    if w**2+t**2<1:
+        m+=1
+print(n*4/N,m*4/N)
